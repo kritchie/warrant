@@ -124,14 +124,17 @@ class CognitoAuthTestCase(unittest.TestCase):
     def test_register(self, cognito_user):
         u = cognito_user(self.cognito_user_pool_id, self.app_id,
                          username=self.username)
-        u.add_base_attributes(
+        base_attr = dict(
             given_name='Brian', family_name='Jones',
             name='Brian Jones', email='bjones39@capless.io',
             phone_number='+19194894555', gender='Male',
-            preferred_username='billyocean')
+            preferred_username='billyocean'
+        )
+
+        u.set_base_attributes(**base_attr)
         res = u.register('sampleuser', 'sample4#Password')
 
-        #TODO: Write assumptions
+        self.assertEqual(res, base_attr)
 
     @patch('warrant.aws_srp.AWSSRP.authenticate_user', _mock_authenticate_user)
     @patch('warrant.Cognito.verify_token', _mock_verify_tokens)
