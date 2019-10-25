@@ -256,6 +256,22 @@ class CognitoAuthTestCase(unittest.TestCase):
         self.assertEqual(u.somerandom, 'attribute')
 #
 
+    def test_admin_delete_user_attributes(self):
+        u = Cognito(self.cognito_user_pool_id,self.app_id)
+        u._set_attributes({
+                'ResponseMetadata':{
+                    'HTTPStatusCode':200
+                }
+        },
+            {
+                'somerandom': 'attribute',
+            }
+        )
+        self.assertEqual(getattr(u, 'somerandom', None), 'attribute')
+
+        u.admin_delete_user_attribute(['somerandom'])
+        self.assertEqual(getattr(u, 'somerandom', None), None)
+
     @patch('warrant.Cognito.verify_token', _mock_verify_tokens)
     def test_admin_authenticate(self):
 
